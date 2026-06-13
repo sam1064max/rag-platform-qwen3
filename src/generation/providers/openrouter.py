@@ -1,5 +1,5 @@
 import time
-from typing import AsyncIterator
+from collections.abc import AsyncIterator
 
 from openai import AsyncOpenAI
 
@@ -9,7 +9,6 @@ from src.generation.providers.base import (
     ProviderConfig,
     ProviderType,
 )
-
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_REFERRER = "rag-platform-qwen3"
@@ -21,14 +20,11 @@ class OpenRouterProvider(LLMProvider):
         if not config.api_key:
             raise ValueError("api_key is required for OpenRouter")
         headers = {
-            "HTTP-Referer": config.extra_headers.get(
-                "HTTP-Referer", OPENROUTER_REFERRER
-            ),
+            "HTTP-Referer": config.extra_headers.get("HTTP-Referer", OPENROUTER_REFERRER),
             "X-Title": config.extra_headers.get("X-Title", "RAG Platform Qwen3"),
         }
         headers.update(
-            {k: v for k, v in config.extra_headers.items()
-             if k not in ("HTTP-Referer", "X-Title")}
+            {k: v for k, v in config.extra_headers.items() if k not in ("HTTP-Referer", "X-Title")}
         )
         self._client = AsyncOpenAI(
             base_url=config.api_base or OPENROUTER_BASE_URL,

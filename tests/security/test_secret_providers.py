@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from src.security.secret_provider import SecretCategory
 from src.security.providers.env import EnvProvider
+from src.security.secret_provider import SecretCategory
 
 
 class TestEnvProvider:

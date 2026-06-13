@@ -38,9 +38,7 @@ class HybridRetriever:
                 chunk_id = result.chunk_id
                 if chunk_id not in result_map:
                     result_map[chunk_id] = result
-                score_map[chunk_id] = score_map.get(chunk_id, 0.0) + 1.0 / (
-                    self._rrf_k + rank
-                )
+                score_map[chunk_id] = score_map.get(chunk_id, 0.0) + 1.0 / (self._rrf_k + rank)
 
         sorted_results = sorted(
             score_map.items(),
@@ -99,9 +97,9 @@ class HybridRetriever:
         scored: list[RetrievalResult] = []
         for result in results:
             text_lower = result.text.lower()
-            score = sum(
-                1.0 for term in query_terms if term in text_lower
-            ) / max(len(query_terms), 1)
+            score = sum(1.0 for term in query_terms if term in text_lower) / max(
+                len(query_terms), 1
+            )
 
             if score > 0:
                 scored.append(

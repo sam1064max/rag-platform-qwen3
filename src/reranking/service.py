@@ -43,11 +43,13 @@ class RerankerService:
         for item in data.get("results", []):
             idx = item["index"]
             doc = documents[idx]
-            results.append({
-                **doc,
-                "rerank_score": item.get("relevance_score", 0.0),
-                "rerank_latency_ms": latency,
-            })
+            results.append(
+                {
+                    **doc,
+                    "rerank_score": item.get("relevance_score", 0.0),
+                    "rerank_latency_ms": latency,
+                }
+            )
 
         results.sort(key=lambda x: x.get("rerank_score", 0), reverse=True)
         return results[:top_k]

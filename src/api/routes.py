@@ -23,9 +23,7 @@ async def health() -> HealthResponse:
 
     if svc.get("vector_store"):
         components["qdrant"] = (
-            "connected"
-            if await svc["vector_store"].health_check()
-            else "disconnected"
+            "connected" if await svc["vector_store"].health_check() else "disconnected"
         )
 
     return HealthResponse(
@@ -55,13 +53,15 @@ async def ingest(files: list[UploadFile]) -> IngestResponse:
     for file in files:
         content = await file.read()
         result = await ingestion.ingest(content, file.filename or "unknown")
-        documents.append({
-            "document_id": result.document_id,
-            "filename": result.filename,
-            "status": result.status,
-            "checksum": result.checksum,
-            "size_bytes": len(content),
-        })
+        documents.append(
+            {
+                "document_id": result.document_id,
+                "filename": result.filename,
+                "status": result.status,
+                "checksum": result.checksum,
+                "size_bytes": len(content),
+            }
+        )
         total_bytes += len(content)
 
     return IngestResponse(
@@ -105,8 +105,7 @@ async def query(request: QueryRequest) -> QueryResponse:
 
     rerank_start = time.monotonic()
     docs_for_rerank = [
-        {"text": r.text, "document_id": r.document_id, "score": r.rrf_score}
-        for r in results
+        {"text": r.text, "document_id": r.document_id, "score": r.rrf_score} for r in results
     ]
     reranked = await reranker.rerank(
         query=request.query,

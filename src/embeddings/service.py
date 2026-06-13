@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
 import time
+from dataclasses import dataclass
 
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential

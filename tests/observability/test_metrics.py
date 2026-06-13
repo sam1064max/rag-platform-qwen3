@@ -1,10 +1,10 @@
 from src.observability.metrics import (
+    rag_guardrail_violations,
     rag_query_duration,
     rag_query_total,
-    rag_guardrail_violations,
+    rag_retrieval_recall,
     rag_tokens_input,
     rag_tokens_output,
-    rag_retrieval_recall,
 )
 
 
@@ -27,8 +27,8 @@ class TestMetrics:
     def test_token_counters(self) -> None:
         rag_tokens_input.inc(100)
         rag_tokens_output.inc(50)
-        input_vals = dict(rag_tokens_input.collect()[0].samples)
-        output_vals = dict(rag_tokens_output.collect()[0].samples)
+        dict(rag_tokens_input.collect()[0].samples)
+        dict(rag_tokens_output.collect()[0].samples)
         total_input = sum(rag_tokens_input.collect()[0].samples[0])
         assert total_input >= 1
 

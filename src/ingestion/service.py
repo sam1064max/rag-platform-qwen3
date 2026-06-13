@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from src.ingestion.dedup import DeduplicationEngine
-from src.ingestion.parsers.base import DocumentParser, ParseResult
+from src.ingestion.parsers.base import DocumentParser
 
 
 @dataclass
@@ -80,7 +80,7 @@ class IngestionService:
                 **result.metadata,
                 "checksum": checksum,
                 "document_id": doc_id,
-                "ingested_at": datetime.now(timezone.utc).isoformat(),
+                "ingested_at": datetime.now(UTC).isoformat(),
                 "content_length": len(result.text),
             }
 

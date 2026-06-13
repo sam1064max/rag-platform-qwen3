@@ -1,6 +1,6 @@
-from src.vectorstore.service import VectorStoreService, SearchResult
+from src.vectorstore.service import SearchResult, VectorStoreService
 
 __all__ = [
-    "VectorStoreService",
     "SearchResult",
+    "VectorStoreService",
 ]

@@ -56,13 +56,15 @@ class ContextReconstructor:
 
             text_parts.append(f"[{i + 1}] {chunk_text}")
 
-            citations.append({
-                "citation_id": i + 1,
-                "document_id": doc_id,
-                "filename": filename,
-                "text_snippet": chunk_text[:200],
-                "relevance_score": score,
-            })
+            citations.append(
+                {
+                    "citation_id": i + 1,
+                    "document_id": doc_id,
+                    "filename": filename,
+                    "text_snippet": chunk_text[:200],
+                    "relevance_score": score,
+                }
+            )
 
         return ReconstructedContext(
             text="\n\n".join(text_parts),

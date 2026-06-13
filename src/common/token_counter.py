@@ -1,8 +1,10 @@
+import typing
+
 import tiktoken
 
 
 class TokenCounter:
-    _encodings: dict[str, tiktoken.Encoding] = {}
+    _encodings: typing.ClassVar[dict[str, tiktoken.Encoding]] = {}
 
     @classmethod
     def count(cls, text: str, model: str = "cl100k_base") -> int:
@@ -14,9 +16,7 @@ class TokenCounter:
         return len(cls._encodings[model].encode(text))
 
     @classmethod
-    def truncate(
-        cls, text: str, max_tokens: int, model: str = "cl100k_base"
-    ) -> str:
+    def truncate(cls, text: str, max_tokens: int, model: str = "cl100k_base") -> str:
         token_count = cls.count(text, model)
         if token_count <= max_tokens:
             return text

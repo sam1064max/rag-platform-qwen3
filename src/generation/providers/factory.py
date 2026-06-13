@@ -1,7 +1,7 @@
 from src.generation.providers.base import LLMProvider, ProviderConfig, ProviderType
-from src.generation.providers.vllm import VLLMProvider
 from src.generation.providers.openai_compat import OpenAICompatibleProvider
 from src.generation.providers.openrouter import OpenRouterProvider
+from src.generation.providers.vllm import VLLMProvider
 
 
 def create_provider(config: ProviderConfig) -> LLMProvider:

@@ -11,7 +11,7 @@ logger = structlog.get_logger()
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     logger.info("rag-platform-qwen3 starting...")
     register_services({})
     yield
