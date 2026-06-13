@@ -34,7 +34,7 @@ jobs:
           version: "0.5.x"
       - run: uv sync --dev
       - name: Tests
-        run: uvx pytest tests/ --cov-report=xml
+        run: uvx --with pytest-cov pytest tests/ --cov-report=xml
       - uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
