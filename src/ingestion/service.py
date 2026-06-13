@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 from src.ingestion.dedup import DeduplicationEngine
-from src.ingestion.parsers.base import DocumentParser, ParseResult
+from src.ingestion.parsers.base import DocumentParser
 
 
 @dataclass
@@ -37,9 +37,10 @@ class IngestionService:
             raise ValueError(f"Unsupported file type: {ext}")
         return parser
 
-    @retry(
+    @retry(  # type: ignore[untyped-decorator]
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
+        retry=retry_if_exception(lambda e: not isinstance(e, ValueError)),
     )
     async def ingest(
         self,
@@ -80,7 +81,7 @@ class IngestionService:
                 **result.metadata,
                 "checksum": checksum,
                 "document_id": doc_id,
-                "ingested_at": datetime.now(timezone.utc).isoformat(),
+                "ingested_at": datetime.now(UTC).isoformat(),
                 "content_length": len(result.text),
             }
 

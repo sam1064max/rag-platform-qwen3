@@ -1,4 +1,3 @@
-import json
 from typing import Any
 
 import httpx
@@ -34,9 +33,7 @@ class OpenBaoProvider(SecretProvider):
             version=metadata.get("version", 1),
         )
 
-    async def set_secret(
-        self, path: str, key: str, value: str, category: SecretCategory
-    ) -> None:
+    async def set_secret(self, path: str, key: str, value: str, category: SecretCategory) -> None:
         url = f"/v1/{path.lstrip('/')}"
         payload: dict[str, Any] = {"data": {key: value}}
 
@@ -46,7 +43,7 @@ class OpenBaoProvider(SecretProvider):
         response = await self._client.post(url, json=payload)
         response.raise_for_status()
 
-    async def delete_secret(self, path: str, key: str) -> None:
+    async def delete_secret(self, path: str, _key: str) -> None:
         url = f"/v1/{path.lstrip('/')}"
         response = await self._client.delete(url)
         response.raise_for_status()

@@ -1,6 +1,6 @@
-from src.embeddings.service import EmbeddingService, EmbeddingResult
+from src.embeddings.service import EmbeddingResult, EmbeddingService
 
 __all__ = [
-    "EmbeddingService",
     "EmbeddingResult",
+    "EmbeddingService",
 ]

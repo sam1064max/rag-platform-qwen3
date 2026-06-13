@@ -1,9 +1,8 @@
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 
 
-class ChunkType(str, Enum):
+class ChunkType(StrEnum):
     PARENT = "parent"
     CHILD = "child"
 
@@ -35,7 +34,7 @@ class ChunkingEngine:
     ) -> None:
         self._parent_size = parent_size
         self._child_size = child_size
-        self._overlap = overlap
+        self._overlap = min(overlap, max(parent_size - 1, 0))
 
     def _count_tokens(self, text: str) -> int:
         import tiktoken
@@ -52,9 +51,7 @@ class ChunkingEngine:
         sentences = re.split(r"(?<=[.!?])\s+", text)
         return [s.strip() for s in sentences if s.strip()]
 
-    def _chunk_by_tokens(
-        self, text: str, max_tokens: int, overlap: int
-    ) -> list[str]:
+    def _chunk_by_tokens(self, text: str, max_tokens: int, overlap: int) -> list[str]:
         import tiktoken
 
         try:
@@ -94,9 +91,7 @@ class ChunkingEngine:
         metadata = metadata or {}
         total_tokens = self._count_tokens(text)
 
-        parent_chunks = self._chunk_by_tokens(
-            text, self._parent_size, self._overlap
-        )
+        parent_chunks = self._chunk_by_tokens(text, self._parent_size, self._overlap)
 
         chunks: list[Chunk] = []
         relations: list[ChunkRelation] = []
@@ -120,9 +115,7 @@ class ChunkingEngine:
                 )
             )
 
-            child_texts = self._chunk_by_tokens(
-                parent_text, self._child_size, 0
-            )
+            child_texts = self._chunk_by_tokens(parent_text, self._child_size, 0)
 
             for child_idx, child_text in enumerate(child_texts):
                 child_id = str(uuid.uuid4())

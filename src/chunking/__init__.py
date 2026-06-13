@@ -1,8 +1,8 @@
-from src.chunking.engine import ChunkingEngine, Chunk, ChunkType, ChunkRelation
+from src.chunking.engine import Chunk, ChunkingEngine, ChunkRelation, ChunkType
 
 __all__ = [
-    "ChunkingEngine",
     "Chunk",
-    "ChunkType",
     "ChunkRelation",
+    "ChunkType",
+    "ChunkingEngine",
 ]

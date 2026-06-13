@@ -1,18 +1,18 @@
-from src.chunking.engine import ChunkType, ChunkingEngine
+from src.chunking.engine import ChunkingEngine, ChunkType
 
 
 class TestChunkingEngine:
     def test_short_text_creates_single_parent(self) -> None:
         engine = ChunkingEngine(parent_size=100, child_size=50)
         text = "Short text."
-        chunks, relations = engine.chunk(text, "doc-1")
+        chunks, _relations = engine.chunk(text, "doc-1")
         assert len(chunks) >= 1
         assert chunks[0].chunk_type == ChunkType.PARENT
 
     def test_long_text_creates_multiple_chunks(self) -> None:
         engine = ChunkingEngine(parent_size=50, child_size=20)
         text = " ".join(["word"] * 200)
-        chunks, relations = engine.chunk(text, "doc-1")
+        chunks, _relations = engine.chunk(text, "doc-1")
         assert len(chunks) > 1
         assert any(c.chunk_type == ChunkType.CHILD for c in chunks)
 

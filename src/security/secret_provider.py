@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 
-class SecretCategory(str, Enum):
+class SecretCategory(StrEnum):
     LLM_CREDENTIALS = "llm"
     DATABASE_CREDENTIALS = "database"
     STORAGE_CREDENTIALS = "storage"
@@ -22,21 +22,18 @@ class Secret:
 
 class SecretProvider(ABC):
     @abstractmethod
-    async def get_secret(self, path: str, key: str) -> Secret:
-        ...
+    async def get_secret(self, path: str, key: str) -> Secret: ...
 
     @abstractmethod
-    async def set_secret(self, path: str, key: str, value: str, category: SecretCategory) -> None:
-        ...
+    async def set_secret(
+        self, path: str, key: str, value: str, category: SecretCategory
+    ) -> None: ...
 
     @abstractmethod
-    async def delete_secret(self, path: str, key: str) -> None:
-        ...
+    async def delete_secret(self, path: str, key: str) -> None: ...
 
     @abstractmethod
-    async def list_secrets(self, path: str) -> list[str]:
-        ...
+    async def list_secrets(self, path: str) -> list[str]: ...
 
     @abstractmethod
-    async def health_check(self) -> bool:
-        ...
+    async def health_check(self) -> bool: ...

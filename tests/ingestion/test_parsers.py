@@ -1,7 +1,7 @@
 import pytest
 
-from src.ingestion.parsers.txt import TxtParser
 from src.ingestion.parsers.markdown import MarkdownParser
+from src.ingestion.parsers.txt import TxtParser
 
 
 class TestTxtParser:

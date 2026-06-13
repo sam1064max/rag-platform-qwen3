@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import AsyncIterator
+from enum import StrEnum
 
 
-class ProviderType(str, Enum):
+class ProviderType(StrEnum):
     VLLM = "vllm"
     OPENAI_COMPAT = "openai_compat"
     OPENROUTER = "openrouter"
@@ -43,17 +43,14 @@ class LLMProvider(ABC):
         self,
         prompt: str,
         system_prompt: str | None = None,
-    ) -> GenerationResult:
-        ...
+    ) -> GenerationResult: ...
 
     @abstractmethod
-    async def generate_stream(
+    def generate_stream(
         self,
         prompt: str,
         system_prompt: str | None = None,
-    ) -> AsyncIterator[str]:
-        ...
+    ) -> AsyncIterator[str]: ...
 
     @abstractmethod
-    async def health_check(self) -> bool:
-        ...
+    async def health_check(self) -> bool: ...

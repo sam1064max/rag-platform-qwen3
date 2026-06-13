@@ -11,19 +11,14 @@ class EnvProvider(SecretProvider):
         env_key = f"{self._prefix}{path.upper().replace('/', '_')}_{key.upper()}"
         value = os.environ.get(env_key)
         if value is None:
-            raise KeyError(
-                f"Environment variable '{env_key}' not found "
-                f"(path={path}, key={key})"
-            )
+            raise KeyError(f"Environment variable '{env_key}' not found (path={path}, key={key})")
         return Secret(
             key=key,
             value=value,
             category=SecretCategory.API_KEYS,
         )
 
-    async def set_secret(
-        self, path: str, key: str, value: str, category: SecretCategory
-    ) -> None:
+    async def set_secret(self, path: str, key: str, value: str, _category: SecretCategory) -> None:
         env_key = f"{self._prefix}{path.upper().replace('/', '_')}_{key.upper()}"
         os.environ[env_key] = value
 
@@ -33,10 +28,7 @@ class EnvProvider(SecretProvider):
 
     async def list_secrets(self, path: str) -> list[str]:
         prefix = f"{self._prefix}{path.upper().replace('/', '_')}_"
-        return [
-            k.replace(prefix, "") for k in os.environ
-            if k.startswith(prefix)
-        ]
+        return [k.replace(prefix, "") for k in os.environ if k.startswith(prefix)]
 
     async def health_check(self) -> bool:
         return True

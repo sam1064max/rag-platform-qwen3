@@ -14,7 +14,7 @@ from src.api.models import (
 router = APIRouter(prefix="/api/v1")
 
 
-@router.get("/health", response_model=HealthResponse)
+@router.get("/health", response_model=HealthResponse)  # type: ignore[untyped-decorator]
 async def health() -> HealthResponse:
     from src.api.dependencies import get_services
 
@@ -23,9 +23,7 @@ async def health() -> HealthResponse:
 
     if svc.get("vector_store"):
         components["qdrant"] = (
-            "connected"
-            if await svc["vector_store"].health_check()
-            else "disconnected"
+            "connected" if await svc["vector_store"].health_check() else "disconnected"
         )
 
     return HealthResponse(
@@ -35,12 +33,12 @@ async def health() -> HealthResponse:
     )
 
 
-@router.get("/ready", response_model=ReadyResponse)
+@router.get("/ready", response_model=ReadyResponse)  # type: ignore[untyped-decorator]
 async def ready() -> ReadyResponse:
     return ReadyResponse(ready=True)
 
 
-@router.post("/ingest", response_model=IngestResponse, status_code=202)
+@router.post("/ingest", response_model=IngestResponse, status_code=202)  # type: ignore[untyped-decorator]
 async def ingest(files: list[UploadFile]) -> IngestResponse:
     from src.api.dependencies import get_services
 
@@ -55,13 +53,15 @@ async def ingest(files: list[UploadFile]) -> IngestResponse:
     for file in files:
         content = await file.read()
         result = await ingestion.ingest(content, file.filename or "unknown")
-        documents.append({
-            "document_id": result.document_id,
-            "filename": result.filename,
-            "status": result.status,
-            "checksum": result.checksum,
-            "size_bytes": len(content),
-        })
+        documents.append(
+            {
+                "document_id": result.document_id,
+                "filename": result.filename,
+                "status": result.status,
+                "checksum": result.checksum,
+                "size_bytes": len(content),
+            }
+        )
         total_bytes += len(content)
 
     return IngestResponse(
@@ -72,7 +72,7 @@ async def ingest(files: list[UploadFile]) -> IngestResponse:
     )
 
 
-@router.post("/query", response_model=QueryResponse)
+@router.post("/query", response_model=QueryResponse)  # type: ignore[untyped-decorator]
 async def query(request: QueryRequest) -> QueryResponse:
     from src.api.dependencies import get_services
 
@@ -80,23 +80,27 @@ async def query(request: QueryRequest) -> QueryResponse:
     query_id = str(uuid.uuid4())
     start = time.monotonic()
 
-    retriever = svc.get("retriever")
-    reranker = svc.get("reranker")
-    context_reconstructor = svc.get("context_reconstructor")
-    generation = svc.get("generation")
+    svc_retriever = svc.get("retriever")
+    svc_reranker = svc.get("reranker")
+    svc_context = svc.get("context_reconstructor")
+    svc_generation = svc.get("generation")
 
-    if not all([retriever, reranker, context_reconstructor, generation]):
+    if not all([svc_retriever, svc_reranker, svc_context, svc_generation]):
         raise HTTPException(status_code=503, detail="Query pipeline unavailable")
+    assert svc_retriever is not None
+    assert svc_reranker is not None
+    assert svc_context is not None
+    assert svc_generation is not None
 
     retrieval_start = time.monotonic()
-    filter_dict = {}
+    filter_dict: dict[str, list[str] | str] = {}
     if request.filters:
         if request.filters.date_from:
             filter_dict["date_from"] = request.filters.date_from
         if request.filters.doc_types:
             filter_dict["doc_type"] = request.filters.doc_types
 
-    results = await retriever.search(
+    results = await svc_retriever.search(
         query=request.query,
         top_k=20,
         filter_=filter_dict,
@@ -105,20 +109,19 @@ async def query(request: QueryRequest) -> QueryResponse:
 
     rerank_start = time.monotonic()
     docs_for_rerank = [
-        {"text": r.text, "document_id": r.document_id, "score": r.rrf_score}
-        for r in results
+        {"text": r.text, "document_id": r.document_id, "score": r.rrf_score} for r in results
     ]
-    reranked = await reranker.rerank(
+    reranked = await svc_reranker.rerank(
         query=request.query,
         documents=docs_for_rerank,
         top_k=request.top_k or 5,
     )
     rerank_time = (time.monotonic() - rerank_start) * 1000
 
-    context = context_reconstructor.reconstruct(reranked)
+    context = svc_context.reconstruct(reranked)
 
     gen_start = time.monotonic()
-    result = await generation.generate(
+    result = await svc_generation.generate(
         query=request.query,
         context=context.text,
     )

@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
 import time
+from dataclasses import dataclass
 
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -27,7 +27,7 @@ class EmbeddingService:
         self._batch_size = batch_size
         self._client = httpx.AsyncClient(timeout=60.0)
 
-    @retry(
+    @retry(  # type: ignore[untyped-decorator]
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
     )

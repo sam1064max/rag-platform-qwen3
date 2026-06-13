@@ -4,6 +4,7 @@
 [![Python](https://img.shields.io/badge/python-3.13-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/sam1064max/rag-platform-qwen3)](https://github.com/sam1064max/rag-platform-qwen3/releases)
+[![Coverage](https://codecov.io/gh/sam1064max/rag-platform-qwen3/branch/main/graph/badge.svg)](https://codecov.io/gh/sam1064max/rag-platform-qwen3)
 
 Production-grade, fully self-hosted, open-source Retrieval-Augmented Generation (RAG) platform.
 

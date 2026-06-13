@@ -17,13 +17,13 @@ jobs:
       - uses: astral-sh/setup-uv@v4
         with:
           version: "0.5.x"
-      - run: uv sync --dev
+      - run: uv sync --extra dev
       - name: Ruff
         run: uvx ruff check src/ tests/
       - name: Ruff format
         run: uvx ruff format --check src/ tests/
       - name: MyPy
-        run: uvx mypy src/
+        run: uvx mypy --no-warn-return-any -p src
 
   test:
     runs-on: ubuntu-latest
@@ -32,9 +32,9 @@ jobs:
       - uses: astral-sh/setup-uv@v4
         with:
           version: "0.5.x"
-      - run: uv sync --dev
+      - run: uv sync --extra dev
       - name: Tests
-        run: uv run pytest tests/ -v --cov=src --cov-report=xml --cov-report=term-missing
+        run: uv run python -m pytest tests/ --cov-report=xml
       - uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml

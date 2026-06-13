@@ -35,9 +35,7 @@ class VectorStoreService:
 
     async def ensure_collection(self) -> None:
         collections = await self._client.get_collections()
-        exists = any(
-            c.name == self._collection for c in collections.collections
-        )
+        exists = any(c.name == self._collection for c in collections.collections)
         if not exists:
             await self._client.create_collection(
                 collection_name=self._collection,
@@ -83,8 +81,7 @@ class VectorStoreService:
         points: list[tuple[str, list[float], dict[str, Any]]],
     ) -> None:
         point_structs = [
-            models.PointStruct(id=pid, vector=vec, payload=pld)
-            for pid, vec, pld in points
+            models.PointStruct(id=pid, vector=vec, payload=pld) for pid, vec, pld in points
         ]
         await self._client.upsert(
             collection_name=self._collection,

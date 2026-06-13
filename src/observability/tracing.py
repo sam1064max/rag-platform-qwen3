@@ -1,3 +1,4 @@
+from langfuse import Langfuse
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
     OTLPSpanExporter,
@@ -5,8 +6,6 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-
-from langfuse import Langfuse
 
 
 def setup_tracing(
@@ -16,10 +15,12 @@ def setup_tracing(
     langfuse_secret_key: str = "",
     langfuse_host: str = "http://localhost:3000",
 ) -> trace.Tracer:
-    resource = Resource.create({
-        "service.name": service_name,
-        "service.version": "1.0.0",
-    })
+    resource = Resource.create(
+        {
+            "service.name": service_name,
+            "service.version": "1.0.0",
+        }
+    )
 
     provider = TracerProvider(resource=resource)
     exporter = OTLPSpanExporter(endpoint=otel_endpoint, insecure=True)

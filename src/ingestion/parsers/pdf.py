@@ -1,5 +1,3 @@
-import io
-
 import fitz
 
 from src.ingestion.parsers.base import DocumentParser, ParseResult

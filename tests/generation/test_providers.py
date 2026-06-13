@@ -74,13 +74,9 @@ class TestVLLMProvider:
             provider_type=ProviderType.VLLM,
             api_base="http://localhost:8000/v1",
         )
-        with patch(
-            "src.generation.providers.vllm.AsyncOpenAI"
-        ) as mock_client:
+        with patch("src.generation.providers.vllm.AsyncOpenAI") as mock_client:
             instance = mock_client.return_value
-            instance.models.list = AsyncMock(
-                return_value=MagicMock()
-            )
+            instance.models.list = AsyncMock(return_value=MagicMock())
             provider = create_provider(config)
             result = await provider.health_check()
             assert result is True
@@ -91,13 +87,9 @@ class TestVLLMProvider:
             provider_type=ProviderType.VLLM,
             api_base="http://localhost:8000/v1",
         )
-        with patch(
-            "src.generation.providers.vllm.AsyncOpenAI"
-        ) as mock_client:
+        with patch("src.generation.providers.vllm.AsyncOpenAI") as mock_client:
             instance = mock_client.return_value
-            instance.models.list = AsyncMock(
-                side_effect=Exception("Connection refused")
-            )
+            instance.models.list = AsyncMock(side_effect=Exception("Connection refused"))
             provider = create_provider(config)
             result = await provider.health_check()
             assert result is False
@@ -139,12 +131,8 @@ class TestOpenRouterProvider:
             api_key="sk-test",
             model="qwen3-32b",
         )
-        with patch(
-            "src.generation.providers.openrouter.AsyncOpenAI"
-        ) as mock_client:
-            mock_client.return_value.models.list = AsyncMock(
-                return_value=MagicMock()
-            )
+        with patch("src.generation.providers.openrouter.AsyncOpenAI") as mock_client:
+            mock_client.return_value.models.list = AsyncMock(return_value=MagicMock())
             provider = create_provider(config)
             result = await provider.health_check()
             assert result is True
