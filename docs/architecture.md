@@ -692,9 +692,79 @@ flowchart TD
 
 ---
 
-## 14. Technology Decision Records
+## 14. LLM Provider Architecture
 
-### 14.1 Qdrant (Vector Database)
+The platform supports multiple LLM backends through a provider abstraction layer.
+
+```mermaid
+flowchart TD
+    subgraph API["Application Layer"]
+        QS["Query Service"]
+        GEN["Generation Client"]
+    end
+
+    subgraph Provider["Provider Abstraction"]
+        IFACE["LLMProvider (ABC)"]
+        FACTORY["Provider Factory"]
+        CFG["ProviderConfig"]
+    end
+
+    subgraph Implementations["Provider Implementations"]
+        VLLM["VLLMProvider<br/>vLLM self-hosted"]
+        OAI["OpenAICompatibleProvider<br/>OpenAI-compatible API"]
+        OR["OpenRouterProvider<br/>OpenRouter"]
+    end
+
+    subgraph Secrets["OpenBao Secrets"]
+        VLLM_SEC["vllm/api_key<br/>vllm/api_base"]
+        OAI_SEC["openai/api_key<br/>openai/api_base<br/>openai/model"]
+        OR_SEC["openrouter/api_key<br/>openrouter/model"]
+    end
+
+    QS --> GEN
+    GEN --> FACTORY
+    FACTORY -->|"creates"| IFACE
+    IFACE <|-- VLLM
+    IFACE <|-- OAI
+    IFACE <|-- OR
+    VLLM -.->|"reads"| VLLM_SEC
+    OAI -.->|"reads"| OAI_SEC
+    OR -.->|"reads"| OR_SEC
+    CFG --> FACTORY
+```
+
+### 14.1 Provider Selection
+
+Provider is selected per-request based on configuration:
+
+| Scenario | Recommended Provider | Configuration |
+|----------|---------------------|---------------|
+| Self-hosted GPU | vLLM | `provider: vllm` |
+| External API (OpenAI, Anthropic) | OpenAI Compatible | `provider: openai_compat` |
+| Multi-model routing | OpenRouter | `provider: openrouter` |
+
+### 14.2 Provider Interface
+
+```python
+class LLMProvider(ABC):
+    async def generate(prompt, system_prompt=None) -> GenerationResult: ...
+    async def generate_stream(prompt, system_prompt=None) -> AsyncIterator[str]: ...
+    async def health_check() -> bool: ...
+```
+
+### 14.3 Secret Schema
+
+| Provider | OpenBao Path | Keys |
+|----------|-------------|------|
+| vLLM | `secret/llm/vllm` | `api_key`, `api_base` |
+| OpenAI Compat | `secret/llm/openai` | `api_key`, `api_base`, `model` |
+| OpenRouter | `secret/llm/openrouter` | `api_key`, `model` |
+
+---
+
+## 15. Technology Decision Records
+
+### 15.1 Qdrant (Vector Database)
 
 **Selected:** Qdrant
 
@@ -712,7 +782,7 @@ flowchart TD
 
 **Decision:** Qdrant for its performance, simplicity, and production features.
 
-### 14.2 OpenBao (Secrets Management)
+### 15.2 OpenBao (Secrets Management)
 
 **Selected:** OpenBao
 
@@ -729,7 +799,7 @@ flowchart TD
 
 **Decision:** OpenBao for full open-source compliance with production-grade secrets management.
 
-### 14.3 MinIO (Object Storage)
+### 15.3 MinIO (Object Storage)
 
 **Selected:** MinIO
 
@@ -745,7 +815,7 @@ flowchart TD
 
 **Decision:** MinIO for S3 compatibility, performance, and self-hosted simplicity.
 
-### 14.4 vLLM (Inference Runtime)
+### 15.4 vLLM (Inference Runtime)
 
 **Selected:** vLLM
 
@@ -763,7 +833,25 @@ flowchart TD
 
 **Decision:** vLLM for production-grade LLM serving with optimal GPU utilization.
 
-### 14.5 Qwen3 Models
+### 15.5 LLM Provider Abstraction
+
+**Selected:** Strategy Pattern with Factory
+
+**Alternatives Considered:**
+- Single provider hardcoded (rejected: not extensible)
+- Configuration flags per provider (rejected: violates OCP)
+- Plugin system (over-engineered for 3 providers at this stage)
+
+**Tradeoffs:**
+- *Pro:* Clean ABC interface allows adding new providers with zero changes to consumers
+- *Pro:* Factory pattern handles provider selection based on config
+- *Pro:* Each provider owns its auth, retry, and error handling
+- *Con:* Slight indirection overhead (negligible vs network latency)
+- *Con:* Need to maintain multiple provider code paths
+
+**Decision:** ABC + Factory pattern for clean extensibility and testability.
+
+### 15.6 Qwen3 Models
 
 **Selected:** Qwen3-Embedding-8B, Qwen3-32B-Instruct, Qwen3-Reranker
 
@@ -795,7 +883,7 @@ flowchart TD
 
 **Decision:** Qwen3 family for unified model architecture, strong benchmarks, and single-provider consistency.
 
-### 14.6 FastAPI (API Framework)
+### 15.7 FastAPI (API Framework)
 
 **Selected:** FastAPI
 
@@ -811,9 +899,7 @@ flowchart TD
 
 **Decision:** FastAPI for async performance, automatic API documentation, and Pydantic integration.
 
-### 14.7 Qdrant (Vector Database) - repeated, apply TDR pattern
-
-### 14.8 NVIDIA NeMo Guardrails
+### 15.8 NVIDIA NeMo Guardrails
 
 **Selected:** NeMo Guardrails
 
@@ -830,7 +916,7 @@ flowchart TD
 
 **Decision:** NeMo Guardrails for comprehensive, configurable content safety.
 
-### 14.9 RAGAS + DeepEval (Evaluation)
+### 15.9 RAGAS + DeepEval (Evaluation)
 
 **Selected:** RAGAS + DeepEval
 
@@ -848,7 +934,7 @@ flowchart TD
 
 **Decision:** Dual framework for comprehensive coverage - RAGAS for retrieval metrics, DeepEval for generation metrics.
 
-### 14.10 Langfuse (Observability)
+### 15.10 Langfuse (Observability)
 
 **Selected:** Langfuse
 
@@ -866,7 +952,7 @@ flowchart TD
 
 **Decision:** Langfuse for purpose-built LLM observability with self-hosting support.
 
-### 14.11 Gitea (Source Control + CI/CD)
+### 15.11 Gitea (Source Control + CI/CD)
 
 **Selected:** Gitea + Gitea Actions
 
@@ -883,7 +969,7 @@ flowchart TD
 
 **Decision:** Gitea for lightweight, self-hosted source control with CI/CD.
 
-### 14.12 uv (Python Package Manager)
+### 15.12 uv (Python Package Manager)
 
 **Selected:** uv
 
@@ -902,9 +988,9 @@ flowchart TD
 
 ---
 
-## 15. Resource Sizing
+## 16. Resource Sizing
 
-### 15.1 Minimum Production Configuration
+### 16.1 Minimum Production Configuration
 
 | Component | CPU | RAM | Storage | GPU |
 |-----------|-----|-----|---------|-----|
@@ -926,7 +1012,7 @@ flowchart TD
 
 **Total Minimum:** 4 hosts, ~220 GB RAM, ~7 TB storage, 1× A100 80GB GPU
 
-### 15.2 Scaling Guidelines
+### 16.2 Scaling Guidelines
 
 | Component | Scale Signal | Action |
 |-----------|-------------|--------|

@@ -122,7 +122,12 @@ Build a production-grade, fully self-hosted, open-source Retrieval-Augmented Gen
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| F-80 | System shall serve Qwen3-32B-Instruct via vLLM | P0 |
+| F-80 | System shall serve Qwen3-32B-Instruct via vLLM (default) | P0 |
+| F-80a | System shall support provider abstraction for LLM backends | P0 |
+| F-80b | System shall support OpenAI-compatible API providers | P1 |
+| F-80c | System shall support OpenRouter as an inference provider | P1 |
+| F-80d | Providers shall be configurable via OpenBao secrets | P0 |
+| F-80e | Provider selection shall be per-request or per-tenant | P2 |
 | F-81 | System shall support streaming responses | P0 |
 | F-82 | System shall support structured output (JSON mode) | P1 |
 | F-83 | System shall enforce citation inclusion in generated answers | P0 |

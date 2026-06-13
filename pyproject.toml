@@ -1,0 +1,107 @@
+[project]
+name = "rag-platform-qwen3"
+version = "0.1.0"
+description = "Production-grade self-hosted RAG platform with Qwen3, Qdrant, vLLM, NeMo Guardrails"
+readme = "README.md"
+authors = [
+    { name = "Sushant Shambharkar", email = "sam1064max@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
+    "qdrant-client>=1.12.0",
+    "openai>=1.55.0",
+    "boto3>=1.35.0",
+    "s3fs>=2024.10.0",
+    "python-multipart>=0.0.12",
+    "PyMuPDF>=1.25.0",
+    "python-docx>=1.1.0",
+    "markitdown>=0.0.1",
+    "tiktoken>=0.8.0",
+    "langchain-text-splitters>=0.3.0",
+    "opentelemetry-api>=1.28.0",
+    "opentelemetry-sdk>=1.28.0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.28.0",
+    "opentelemetry-instrumentation-fastapi>=0.49b0",
+    "langfuse>=2.56.0",
+    "prometheus-client>=0.21.0",
+    "httpx>=0.28.0",
+    "tenacity>=9.0.0",
+    "structlog>=24.4.0",
+    "orjson>=3.10.0",
+    "cryptography>=43.0.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "pytest-benchmark>=5.1.0",
+    "ruff>=0.7.0",
+    "mypy>=1.13.0",
+    "pre-commit>=4.0.0",
+    "httpx>=0.28.0",
+    "respx>=0.22.0",
+    "types-pyyaml>=6.0.12",
+]
+ragas = ["ragas>=0.2.0"]
+deepeval = ["deepeval>=1.2.0"]
+guardrails = ["nemoguardrails>=0.10.0"]
+
+[project.scripts]
+rag-platform-qwen3 = "rag_platform_qwen3:main"
+
+[build-system]
+requires = ["uv_build>=0.11.19,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["rag_platform_qwen3*"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "I", "N", "W",
+    "UP", "B", "SIM", "ARG",
+    "C4", "DTZ", "T10", "RUF",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ARG001", "ARG002"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+ignore_missing_imports = true
+explicit_package_bases = true
+namespace_packages = true
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"
+addopts = "-v --cov=src --cov-report=term-missing --cov-report=html"
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "src/rag_platform_qwen3/__init__.py",
+    "tests/*",
+]
