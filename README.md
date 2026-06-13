@@ -59,7 +59,7 @@ A production-grade, fully self-hosted, open-source Retrieval-Augmented Generatio
 
 ## Architecture
 
-```
+```text
 User → FastAPI → Guardrails → Agent Runtime → Hybrid Retrieval → Reranking → Context → Generation
                               ├─ Planner (plan → act → observe)
                               ├─ Tool Selection

@@ -301,18 +301,6 @@ flowchart LR
   QSVC -.->|"mTLS"| VLE
   QSVC -.->|"mTLS"| VLR
   QSVC -.->|"mTLS"| VLG
-
-  classDef untrusted fill:#ffcccc
-  classDef dmz fill:#fff3cd
-  classDef internal fill:#d1ecf1
-  classDef secure fill:#d4edda
-  classDef gpu fill:#e2d1f9
-
-  class USER,ADMIN untrusted
-  class API,AUTH,RATE,GUARD dmz
-  class ING,QSVC,PARS,CHUNK,DEDUP,CTX internal
-  class QD,MINIO,BAO secure
-  class VLE,VLR,VLG gpu
 ```
 
 | Boundary | Trust Level | Access |
@@ -569,33 +557,36 @@ flowchart TD
     end
 
     subgraph Secrets["Secret Categories"]
-        LLM["LLM Credentials<br/>- API Keys<br/>- Model Tokens"]
-        DB["Database Credentials<br/>- Qdrant API Keys<br/>- MinIO Access Keys"]
-        TLS["TLS Certificates<br/>- Service Certs<br/>- CA Cert"]
-        OBS["Observability<br/>- Langfuse Keys<br/>- Grafana Tokens"]
+        LLM["LLM Credentials"]
+        DB["Database Credentials"]
+        TLS["TLS Certificates"]
+        OBS["Observability Tokens"]
     end
 
     subgraph Access["Access Patterns"]
-        INIT["Init Container<br/>- Retrieve secrets<br/>- Write to volume"]
-        SIDECAR["Sidecar<br/>- Proxy secrets<br/>- Auto-rotate"]
-        SDK["App SDK<br/>- Direct API calls<br/>- Lease management"]
+        INIT["Init Container"]
+        SIDECAR["Sidecar"]
+        SDK["App SDK"]
     end
 
     subgraph Policy["Policy Engine"]
-        ADMIN["Admin Policy<br/>- Full access<br/>- Seal/unseal"]
-        APP["App Policy<br/>- Read secrets<br/>- Issue certs"]
-        AUDIT["Audit Policy<br/>- Read audit logs<br/>- No secrets"]
+        ADM["Admin Policy"]
+        APP["App Policy"]
+        AUDIT["Audit Policy"]
     end
 
     BAO1 --- RAFT
     BAO2 --- RAFT
     BAO3 --- RAFT
-    RAFT --> Secrets
+    RAFT --> LLM
+    RAFT --> DB
+    RAFT --> TLS
+    RAFT --> OBS
     INIT -->|"Read"| BAO1
     SIDECAR -->|"Proxy"| BAO1
     SDK -->|"API"| BAO1
-    ADMIN -.->|"Manage"| Policy
-    Policy -->|"Enforce"| BAO1
+    ADM -.->|"Manage"| BAO1
+    APP -.->|"Enforce"| BAO1
     BAO1 -->|"Audit"| AUDIT
 ```
 
