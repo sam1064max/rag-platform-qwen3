@@ -11,7 +11,7 @@
 | Badge | Links To | Verdict | Action |
 |-------|----------|---------|--------|
 | CI Status | GitHub Actions workflow | Automated, real status | Keep |
-| Coverage | Codecov dashboard | Automated, real metrics | Keep |
+| Coverage | Codecov dashboard | Not configured — dead link | Remove |
 | Latest Release | GitHub Releases | Automated, real version | Keep |
 
 ### B. Documentation Badges (Linked)
@@ -77,9 +77,8 @@
 
 ## New Badge Categories
 
-### 1. Automated Status (3 badges)
+### 1. Automated Status (2 badges)
 - CI Status → GitHub Actions
-- Coverage → Codecov
 - Release → GitHub Releases
 
 ### 2. Documentation (5 badges)
@@ -106,4 +105,4 @@
 - Grafana → (future link)
 - Release Notes → /releases
 
-**Final count: 19 badges (down from 32), all with real destinations**
+**Final count: 18 badges (down from 32), all with real destinations**

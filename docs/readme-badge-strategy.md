@@ -19,7 +19,6 @@ Badges linked to real-time CI/CD systems. No manual claims.
 | Badge | Links To | Evidence |
 |-------|----------|----------|
 | CI | GitHub Actions workflow | Build status, test results |
-| Coverage | Codecov dashboard | Test coverage percentage |
 | Release | GitHub Releases | Latest tagged version |
 
 ### 2. Documentation (5 badges)
