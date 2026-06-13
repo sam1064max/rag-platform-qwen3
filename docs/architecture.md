@@ -3,190 +3,180 @@
 ## 1. System Context Diagram
 
 ```mermaid
-C4Context
-  title System Context Diagram - rag-platform-qwen3
+flowchart TD
+  User["End User<br/>Submits queries & uploads docs"]
+  Admin["Platform Admin<br/>Manages & monitors"]
+  Eval["Evaluation Engineer<br/>Runs benchmarks"]
 
-  Person(user, "End User", "Submits queries and uploads documents via API")
-  Person(admin, "Platform Admin", "Manages infrastructure, monitors, configures")
-  Person(evaluator, "Evaluation Engineer", "Runs benchmarks and reviews quality")
+  subgraph RAG["RAG Platform"]
+    API["RAG API<br/>FastAPI ingest & query"]
+  end
 
-  System_Boundary(rag, "RAG Platform") {
-    System(ragapi, "RAG API", "FastAPI-based API layer handling ingest and query")
-  }
+  Qdrant[("Qdrant<br/>Vector Database")]
+  MinIO[("MinIO<br/>Object Storage")]
+  Bao[("OpenBao<br/>Secrets Management")]
+  VLLM["vLLM<br/>LLM Inference"]
+  LF["Langfuse<br/>LLM Observability"]
+  OTel["OpenTelemetry Collector<br/>Distributed Tracing"]
+  PG[("Prometheus + Grafana<br/>Metrics & Dashboards")]
+  Gitea["Gitea<br/>Source Control & CI/CD"]
 
-  System_Ext(qdrant, "Qdrant", "Vector database for embeddings")
-  System_Ext(minio, "MinIO", "Object storage for documents and backups")
-  System_Ext(openbao, "OpenBao", "Secrets management and PKI")
-  System_Ext(vllm, "vLLM", "LLM inference server")
-  System_Ext(langfuse, "Langfuse", "LLM observability and tracing")
-  System_Ext(prom, "Prometheus + Grafana", "Metrics and dashboards")
-  System_Ext(otel, "OpenTelemetry Collector", "Distributed tracing")
-  System_Ext(gitea, "Gitea", "Source control and CI/CD")
-
-  Rel(user, ragapi, "HTTP/HTTPS", "Ingest documents, submit queries")
-  Rel(admin, ragapi, "HTTP/HTTPS", "Configure, monitor, manage")
-  Rel(evaluator, ragapi, "HTTP/HTTPS", "Run evaluations")
-  Rel(ragapi, qdrant, "gRPC", "Store and retrieve embeddings")
-  Rel(ragapi, minio, "S3 API", "Store documents and snapshots")
-  Rel(ragapi, openbao, "API", "Retrieve secrets and certificates")
-  Rel(ragapi, vllm, "HTTP", "Generate embeddings and text")
-  Rel(ragapi, langfuse, "HTTP", "Send traces and spans")
-  Rel(ragapi, otel, "gRPC", "Export traces")
-  Rel_P(prom, ragapi, "HTTP", "Scrape metrics")
+  User -->|"HTTPS"| API
+  Admin -->|"HTTPS"| API
+  Eval -->|"HTTPS"| API
+  API -->|"gRPC"| Qdrant
+  API -->|"S3 API"| MinIO
+  API -->|"API"| Bao
+  API -->|"HTTP"| VLLM
+  API -->|"HTTP"| LF
+  API -->|"gRPC"| OTel
+  PG -.->|"HTTP scrape"| API
 ```
 
 ## 2. Container Diagram
 
 ```mermaid
-C4Container
-  title Container Diagram - rag-platform-qwen3
+flowchart TD
+  User["End User"]
 
-  Person(user, "End User", "API consumer")
+  subgraph Platform["RAG Platform"]
+    API["FastAPI Application<br/>Python 3.13+, FastAPI"]
+    ING["Ingestion Worker<br/>Python"]
+    QRY["Query Worker<br/>Python"]
+    GRD["Guardrail Service<br/>Python, NeMo"]
 
-  System_Boundary(plat, "RAG Platform") {
-    Container(api, "FastAPI Application", "Python 3.13+, FastAPI", "API layer, orchestrates all operations")
-    Container(ingest, "Ingestion Worker", "Python", "Document parsing, chunking, embedding pipeline")
-    Container(query, "Query Worker", "Python", "Retrieval, reranking, generation pipeline")
-    Container(guard, "Guardrail Service", "Python, NeMo", "Content safety checks")
+    Qd[("Qdrant<br/>Vector DB")]
+    Obj[("MinIO<br/>Object Store")]
+    Bao[("OpenBao<br/>Secrets Manager")]
 
-    ContainerDb(qd, "Qdrant", "Vector DB", "Embedding storage and search")
-    ContainerDb(obj, "MinIO", "Object Store", "Document storage and backups")
-    ContainerDb(bao, "OpenBao", "Secrets Manager", "Secrets, certificates, keys")
+    VLE["vLLM Embed<br/>Qwen3-Embedding-8B"]
+    VLR["vLLM Rerank<br/>Qwen3-Reranker"]
+    VLG["vLLM Generate<br/>Qwen3-32B-Instruct"]
 
-    Container(vle, "vLLM Embed", "vLLM", "Qwen3-Embedding-8B serving")
-    Container(vlr, "vLLM Rerank", "vLLM", "Qwen3-Reranker serving")
-    Container(vlg, "vLLM Generate", "vLLM", "Qwen3-32B-Instruct serving")
+    OTelC["OTel Collector<br/>OpenTelemetry"]
+    LF["Langfuse<br/>Node.js"]
+    Prom["Prometheus<br/>Go"]
+    Graf["Grafana<br/>Go"]
+  end
 
-    Container(otelc, "OTel Collector", "OpenTelemetry", "Trace aggregation")
-    Container(lf, "Langfuse", "Node.js", "LLM observability")
-    Container(prom, "Prometheus", "Go", "Metrics storage")
-    Container(graf, "Grafana", "Go", "Dashboards and alerts")
-  }
-
-  Rel(user, api, "HTTP/HTTPS", "Ingest/Query")
-  Rel(api, ingest, "Internal", "Dispatch ingestion jobs")
-  Rel(api, query, "Internal", "Dispatch query jobs")
-  Rel(api, guard, "Internal", "Validate input/output")
-  Rel(api, qd, "gRPC", "Vector operations")
-  Rel(api, obj, "S3 API", "File operations")
-  Rel(api, bao, "HTTP", "Secrets access")
-  Rel(ingest, vle, "HTTP", "Generate embeddings")
-  Rel(ingest, qd, "gRPC", "Store vectors")
-  Rel(ingest, obj, "S3 API", "Store documents")
-  Rel(query, qd, "gRPC", "Search vectors")
-  Rel(query, vlg, "HTTP", "Generate answers")
-  Rel(query, vle, "HTTP", "Query embedding")
-  Rel(query, vlr, "HTTP", "Rerank results")
-  Rel(query, guard, "Internal", "Validate output")
-  Rel(guard, lf, "HTTP", "Log guardrail events")
-  Rel(api, otelc, "gRPC", "Export traces")
-  Rel(otelc, lf, "HTTP", "Forward LLM traces")
-  Rel(prom, api, "HTTP", "Scrape /metrics")
-  Rel(prom, qd, "HTTP", "Scrape metrics")
-  Rel(graf, prom, "HTTP", "Query metrics")
+  User -->|"HTTP/HTTPS"| API
+  API -->|"Dispatch"| ING
+  API -->|"Dispatch"| QRY
+  API -->|"Validate I/O"| GRD
+  API -->|"gRPC"| Qd
+  API -->|"S3 API"| Obj
+  API -->|"HTTP"| Bao
+  ING -->|"HTTP"| VLE
+  ING -->|"gRPC"| Qd
+  ING -->|"S3 API"| Obj
+  QRY -->|"gRPC"| Qd
+  QRY -->|"HTTP"| VLG
+  QRY -->|"HTTP"| VLE
+  QRY -->|"HTTP"| VLR
+  QRY -->|"Internal"| GRD
+  GRD -->|"HTTP"| LF
+  API -->|"gRPC"| OTelC
+  OTelC -->|"HTTP"| LF
+  Prom -->|"HTTP scrape"| API
+  Prom -->|"HTTP scrape"| Qd
+  Graf -->|"HTTP query"| Prom
 ```
 
 ## 3. Component Diagram
 
 ```mermaid
-C4Component
-  title Component Diagram - FastAPI Application
+flowchart TD
+  subgraph App["FastAPI Application"]
+    RTR["Router Layer<br/>FastAPIRouter"]
+    AUTH["Auth Middleware<br/>Bearer validation"]
+    RATE["Rate Limiter<br/>Request limiting"]
 
-  Container_Boundary(app, "FastAPI Application") {
-    Component(rtr, "Router Layer", "FastAPIRouter", "Route /ingest, /query, /health, /metrics, /ready")
-    Component(auth, "Auth Middleware", "Middleware", "Bearer token validation")
-    Component(rate, "Rate Limiter", "Middleware", "Request rate limiting")
+    INGSVC["Ingestion Service"]
+    PARS["Document Parser<br/>Strategy"]
+    CHUNK["Chunking Engine<br/>Strategy"]
+    EMB["Embedding Client"]
+    VEC["Vector Store Client<br/>Qdrant gRPC"]
+    DEDUP["Deduplication Engine"]
 
-    Component(ingsvc, "Ingestion Service", "Service", "Coordinate document processing pipeline")
-    Component(pars, "Document Parser", "Strategy", "Parse PDF/DOCX/TXT/MD")
-    Component(chunk, "Chunking Engine", "Strategy", "Parent-child chunking")
-    Component(emb, "Embedding Client", "Client", "Call vLLM embedding endpoint")
-    Component(vec, "Vector Store Client", "Client", "Qdrant gRPC operations")
-    Component(dedup, "Deduplication Engine", "Service", "Checksum + fingerprint dedup")
+    QSVC["Query Service"]
+    RET["Hybrid Retriever<br/>Dense + BM25 + RRF"]
+    RERANK["Reranker Client"]
+    CTX["Context Reconstructor"]
+    GEN["Generation Client"]
 
-    Component(qsvc, "Query Service", "Service", "Coordinate end-to-end query pipeline")
-    Component(ret, "Hybrid Retriever", "Strategy", "Dense + BM25 + RRF")
-    Component(rerank, "Reranker Client", "Client", "Call vLLM reranker endpoint")
-    Component(ctx, "Context Reconstructor", "Service", "Child-to-parent reconstruction")
-    Component(gen, "Generation Client", "Client", "Call vLLM generate endpoint")
+    GRD_CLIENT["Guardrail Client"]
 
-    Component(grd, "Guardrail Client", "Client", "Call guardrail service")
+    TEL["Telemetry Service<br/>OTel + Langfuse"]
+    MET["Metrics Service<br/>Prometheus"]
+    SEC["Secret Provider<br/>OpenBao / Env"]
+    CFG["Config Service"]
+  end
 
-    Component(tel, "Telemetry Service", "Service", "OpenTelemetry + Langfuse integration")
-    Component(met, "Metrics Service", "Service", "Prometheus metrics collection")
-    Component(sec, "Secret Provider", "Abstraction", "OpenBao or env var secrets")
-    Component(cfg, "Config Service", "Service", "Application configuration")
-  }
-
-  Rel(rtr, auth, "Uses")
-  Rel(rtr, rate, "Uses")
-  Rel(rtr, ingsvc, "Routes /ingest")
-  Rel(rtr, qsvc, "Routes /query")
-  Rel(ingsvc, pars, "Uses")
-  Rel(ingsvc, chunk, "Uses")
-  Rel(ingsvc, emb, "Uses")
-  Rel(ingsvc, vec, "Uses")
-  Rel(ingsvc, dedup, "Uses")
-  Rel(qsvc, emb, "Query embedding")
-  Rel(qsvc, ret, "Uses")
-  Rel(qsvc, rerank, "Uses")
-  Rel(qsvc, ctx, "Uses")
-  Rel(qsvc, gen, "Uses")
-  Rel(qsvc, grd, "Uses")
-  Rel(ingsvc, tel, "Emits traces")
-  Rel(qsvc, tel, "Emits traces")
-  Rel(grd, tel, "Emits guardrail events")
+  RTR --> AUTH
+  RTR --> RATE
+  RTR -->|"/ingest"| INGSVC
+  RTR -->|"/query"| QSVC
+  INGSVC --> PARS
+  INGSVC --> CHUNK
+  INGSVC --> EMB
+  INGSVC --> VEC
+  INGSVC --> DEDUP
+  QSVC --> EMB
+  QSVC --> RET
+  QSVC --> RERANK
+  QSVC --> CTX
+  QSVC --> GEN
+  QSVC --> GRD_CLIENT
+  INGSVC --> TEL
+  QSVC --> TEL
+  GRD_CLIENT --> TEL
 ```
 
 ## 4. Deployment Diagram
 
 ```mermaid
-C4Deployment
-  title Deployment Diagram - Bare Metal / VPS
+flowchart TD
+  subgraph AppHost["Application Host<br/>Linux, Docker Compose"]
+    subgraph AppNet["rag-network (bridge)"]
+      API["rag-api<br/>FastAPI, 4 cores, 8GB"]
+      ING["rag-ingest<br/>Worker, 2 cores, 4GB"]
+      QRY["rag-query<br/>Worker, 2 cores, 4GB"]
+      GRD["rag-guard<br/>NeMo, 2 cores, 4GB"]
+      LF["langfuse<br/>2 cores, 4GB"]
+      OC["otel-collector<br/>1 core, 1GB"]
+    end
+  end
 
-  Deployment_Node(host, "Application Host", "Linux, Docker Compose") {
-    Deployment_Node(docker, "Docker Engine") {
-      Deployment_Node(net, "rag-network (bridge)") {
-        Container(api, "rag-api", "FastAPI, 4 cores, 8GB RAM")
-        Container(ing, "rag-ingest", "Worker, 2 cores, 4GB RAM")
-        Container(qry, "rag-query", "Worker, 2 cores, 4GB RAM")
-        Container(grd, "rag-guard", "NeMo, 2 cores, 4GB RAM")
-        Container(lf, "langfuse", "2 cores, 4GB RAM")
-        Container(oc, "otel-collector", "1 core, 1GB RAM")
-      }
-    }
-  }
+  subgraph GPUHost["GPU Host<br/>NVIDIA A100 80GB"]
+    subgraph GPU["Docker + NVIDIA Toolkit"]
+      VLE["vllm-embed<br/>Qwen3-Embedding-8B, 16GB VRAM"]
+      VLR["vllm-rerank<br/>Qwen3-Reranker, 16GB VRAM"]
+      VLG["vllm-generate<br/>Qwen3-32B-Instruct, 64GB VRAM"]
+    end
+  end
 
-  Deployment_Node(gpu, "GPU Host", "NVIDIA A100 80GB") {
-    Deployment_Node(docker2, "Docker Engine with NVIDIA Container Toolkit") {
-      Container(vle, "vllm-embed", "Qwen3-Embedding-8B, 16GB VRAM")
-      Container(vlr, "vllm-rerank", "Qwen3-Reranker, 16GB VRAM")
-      Container(vlg, "vllm-generate", "Qwen3-32B-Instruct, 64GB VRAM")
-    }
-  }
+  subgraph DataHost["Data Host<br/>Linux"]
+    subgraph DataDocker["Docker Engine"]
+      QD["qdrant<br/>4 cores, 8GB, 100GB SSD"]
+      MIN["minio<br/>4 cores, 8GB, 500GB SSD"]
+      BAO_SRV["openbao<br/>2 cores, 2GB"]
+    end
+  end
 
-  Deployment_Node(data, "Data Host", "Linux") {
-    Deployment_Node(docker3, "Docker Engine") {
-      Container(qd, "qdrant", "4 cores, 8GB RAM, 100GB SSD")
-      Container(min, "minio", "4 cores, 8GB RAM, 500GB SSD")
-      Container(bao, "openbao", "2 cores, 2GB RAM")
-    }
-  }
+  subgraph ObsHost["Observability Host<br/>Linux"]
+    subgraph ObsDocker["Docker Engine"]
+      PROM["prometheus<br/>2 cores, 4GB, 50GB SSD"]
+      GRAF["grafana<br/>1 core, 2GB"]
+    end
+  end
 
-  Deployment_Node(obs, "Observability Host", "Linux") {
-    Deployment_Node(docker4, "Docker Engine") {
-      Container(prom, "prometheus", "2 cores, 4GB RAM, 50GB SSD")
-      Container(graf, "grafana", "1 core, 2GB RAM")
-    }
-  }
-
-  Rel(api, vle, "HTTP", "Embedding")
-  Rel(api, vlr, "HTTP", "Reranking")
-  Rel(api, vlg, "HTTP", "Generation")
-  Rel(api, qd, "gRPC", "Vector ops")
-  Rel(api, min, "S3 API", "Object storage")
-  Rel(api, bao, "HTTP", "Secrets")
-  Rel(prom, api, "HTTP", "/metrics")
+  API -->|"HTTP Embedding"| VLE
+  API -->|"HTTP Reranking"| VLR
+  API -->|"HTTP Generation"| VLG
+  API -->|"gRPC Vector ops"| QD
+  API -->|"S3 API Object storage"| MIN
+  API -->|"HTTP Secrets"| BAO_SRV
+  PROM -.->|"HTTP /metrics"| API
 ```
 
 **Kubernetes alternative:** Each container becomes a Deployment/StatefulSet. Same networking via Services and Ingress.

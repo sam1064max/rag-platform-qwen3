@@ -41,6 +41,7 @@ Build a production-grade, fully self-hosted, open-source Retrieval-Augmented Gen
 | F-06 | System shall maintain an ingestion audit log | P1 |
 | F-07 | System shall support document fingerprinting for content-level dedup | P1 |
 | F-08 | System shall handle OCR for scanned PDFs (optional) | P2 |
+| F-09 | System shall document that image-only inputs are not supported (text extraction required) | P3 |
 
 ### 2.2 Document Chunking
 
