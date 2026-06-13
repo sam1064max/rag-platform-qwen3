@@ -65,6 +65,7 @@ jobs:
           context: .
           file: docker/fastapi/Dockerfile
           push: false
+          load: true
           tags: rag-platform-qwen3:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
