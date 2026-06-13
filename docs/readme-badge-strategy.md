@@ -1,107 +1,101 @@
 # README Badge Strategy
 
 **Date:** 2026-06-13
-**Branch:** feature/readme-badges
+**Updated:** 2026-06-13 (refactor from marketing to evidence-driven)
+**Branch:** feature/readme-badge-refactor
+
+## Principle
+
+Every badge must answer: **"What happens when someone clicks this?"**
+
+If the answer is "nothing useful", the badge is removed.
 
 ## Badge Categories
 
-### 1. Build & Quality
-Badges that communicate code health and CI status.
+### 1. Automated Status (3 badges)
 
-| Badge | Source | Style | Rationale |
-|-------|--------|-------|-----------|
-| CI | GitHub Actions workflow | `flat-square` | Primary build health indicator |
-| Coverage | Codecov | `flat-square` | Test coverage quality signal |
-| Python | shields.io | `flat-square` | Runtime version requirement |
-| License | shields.io | `flat-square` | Legal clarity |
-| Ruff | shields.io | `flat-square` | Linter status (code quality) |
-| MyPy | shields.io | `flat-square` | Type checking (code correctness) |
-| Pre-Commit | shields.io | `flat-square` | Development workflow maturity |
+Badges linked to real-time CI/CD systems. No manual claims.
 
-### 2. Security
-Badges that communicate security posture.
+| Badge | Links To | Evidence |
+|-------|----------|----------|
+| CI | GitHub Actions workflow | Build status, test results |
+| Coverage | Codecov dashboard | Test coverage percentage |
+| Release | GitHub Releases | Latest tagged version |
 
-| Badge | Source | Style | Rationale |
-|-------|--------|-------|-----------|
-| Trivy | shields.io | `flat-square` | Vulnerability scanning |
-| SBOM | shields.io | `flat-square` | Software bill of materials |
-| No Hardcoded Secrets | shields.io | `flat-square` | Security policy indicator |
+### 2. Documentation (5 badges)
 
-### 3. Release Management
-Badges that communicate release maturity.
+Badges linking to project documentation files.
 
-| Badge | Source | Style | Rationale |
-|-------|--------|-------|-----------|
-| Release | GitHub Releases | `flat-square` | Latest version |
-| SemVer | shields.io | `flat-square` | Versioning discipline |
-| Changelog | shields.io | `flat-square` | Release documentation |
+| Badge | Links To | Content |
+|-------|----------|---------|
+| License | LICENSE | MIT license file |
+| Architecture | docs/architecture.md | System architecture |
+| API Docs | docs/spec.md | API contracts |
+| Security | docs/security.md | Threat model |
+| Contributing | CONTRIBUTING.md | Development guide |
+| Changelog | CHANGELOG.md | Release history |
 
-### 4. AI Platform Stack
-Badges showing the core technology stack.
+### 3. Architecture Evidence (5 badges)
 
-| Badge | Source | Style | Rationale |
-|-------|--------|-------|-----------|
-| LLM: Qwen3 | shields.io | `flat-square` | Model family |
-| Inference: vLLM | shields.io | `flat-square` | Serving runtime |
-| Agents: LangGraph | shields.io | `flat-square` | Agent orchestration |
-| Vector DB: Qdrant | shields.io | `flat-square` | Vector storage |
-| API: FastAPI | shields.io | `flat-square` | API framework |
-| Memory: Redis | shields.io | `flat-square` | Working memory |
-| Database: PostgreSQL | shields.io | `flat-square` | Persistent storage |
-| Messaging: NATS | shields.io | `flat-square` | Event bus |
-| Gateway: LiteLLM | shields.io | `flat-square` | Model gateway |
-| Guardrails: NeMo | shields.io | `flat-square` | Content safety |
+Badges linking to specific architecture sections describing implemented capabilities.
 
-### 5. Observability
-Badges showing observability stack.
+| Badge | Links To | Evidence |
+|-------|----------|----------|
+| Agent Runtime | docs/architecture.md#14 | LangGraph StateGraph design |
+| Retrieval System | docs/architecture.md#8 | Hybrid retrieval sequence |
+| Guardrails | docs/security.md | Threat model + guardrail config |
+| Observability | docs/architecture.md#11 | OTel + Prometheus + Grafana |
+| Evaluation | docs/spec.md#7 | RAGAS + DeepEval metrics |
 
-| Badge | Source | Style | Rationale |
-|-------|--------|-------|-----------|
-| Langfuse | shields.io | `flat-square` | LLM tracing |
-| OpenTelemetry | shields.io | `flat-square` | Distributed tracing |
-| Prometheus | shields.io | `flat-square` | Metrics |
-| Grafana | shields.io | `flat-square` | Dashboards |
+### 4. Reports (2 badges)
 
-### 6. Infrastructure
-Badges showing deployment infrastructure.
+Badges linking to analysis and readiness evidence.
 
-| Badge | Source | Style | Rationale |
-|-------|--------|-------|-----------|
-| Docker | shields.io | `flat-square` | Container support |
-| Compose | shields.io | `flat-square` | Orchestration |
-| MinIO | shields.io | `flat-square` | Object storage |
-| OpenBao | shields.io | `flat-square` | Secrets management |
-| Self-Hosted | shields.io | `flat-square` | Deployment model |
+| Badge | Links To | Evidence |
+|-------|----------|----------|
+| Security Report | docs/security.md#5 | STRIDE threat model |
+| Production Readiness | docs/spec.md#12 | Acceptance criteria |
 
-### 7. Capabilities
-Badges showing platform capabilities.
+### 5. Operational (1 badge)
 
-| Badge | Source | Style | Rationale |
-|-------|--------|-------|-----------|
-| Agentic AI | shields.io | `flat-square` | Core capability |
-| RAG Platform | shields.io | `flat-square` | Core capability |
-| Hybrid Search | shields.io | `flat-square` | Retrieval capability |
-| MLOps | shields.io | `flat-square` | Operations maturity |
-| LLMOps | shields.io | `flat-square` | LLM operations |
-| Production Ready | shields.io | `flat-square` | Deployment readiness |
-| Open Source | shields.io | `flat-square` | License model |
+Badges linking to live operational interfaces.
 
-## Badge Style Guide
+| Badge | Links To | Destination |
+|-------|----------|-------------|
+| Swagger UI | /docs | FastAPI OpenAPI docs |
 
-- All badges use `flat-square` style for consistency
-- Color scheme follows semantic meaning:
-  - Blue: technology/runtime
-  - Green: status/quality
+## Badge Style
+
+- Default shields.io style (no `flat-square`)
+- Color follows semantic meaning:
+  - Blue: documentation
+  - Green: quality/license
   - Orange: security
   - Purple: capabilities
-  - Gray: infrastructure
-  - Red: alerts (not used in positive badges)
+  - Cyan: retrieval/observability
+  - Red-pink: evaluation
 
 ## URL Patterns
 
 ```
-Static:  https://img.shields.io/badge/{label}-{message}-{color}?style=flat-square
-Dynamic: https://img.shields.io/github/{metric}/{owner}/{repo}?style=flat-square
-CI:      https://github.com/{owner}/{repo}/actions/workflows/{workflow}/badge.svg
-Codecov: https://codecov.io/gh/{owner}/{repo}/branch/main/graph/badge.svg
+Static:    https://img.shields.io/badge/{label}-{message}-{color}
+Dynamic:   https://img.shields.io/github/{metric}/{owner}/{repo}
+CI:        https://github.com/{owner}/{repo}/actions/workflows/{workflow}/badge.svg
+Codecov:   https://codecov.io/gh/{owner}/{repo}/branch/main/graph/badge.svg
 ```
+
+## Removed Badges (with reasons)
+
+| Badge | Reason |
+|-------|--------|
+| Qwen3, vLLM, FastAPI | Technology logos with no destination |
+| Redis, PostgreSQL, NATS, LiteLLM | Not implemented yet |
+| NeMo, Langfuse, OpenTelemetry, Prometheus, Grafana | Technology logos with no live evidence |
+| Docker, Compose, MinIO, OpenBao | Infrastructure logos with no destination |
+| Self-Hosted | Claim, not evidence |
+| Agentic AI, RAG Platform, Hybrid Search | Marketing claims |
+| MLOps Ready, LLMOps Ready | Marketing claims |
+| Production Ready, Open Source | Claims without evidence |
+| Pre-Commit | No project-specific link |
+| Trivy, SBOM, No Hardcoded Secrets | No live scan results |
+| SemVer | Redundant with Release badge |
