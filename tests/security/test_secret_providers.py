@@ -41,8 +41,8 @@ class TestEnvProvider:
         os.environ["RAG_SECRET_DB_USER"] = "secret2"
         provider = EnvProvider(prefix="RAG_SECRET_")
         keys = await provider.list_secrets("db")
-        assert "pass" in keys
-        assert "user" in keys
+        assert "PASS" in keys
+        assert "USER" in keys
         os.environ.pop("RAG_SECRET_DB_PASS", None)
         os.environ.pop("RAG_SECRET_DB_USER", None)
 

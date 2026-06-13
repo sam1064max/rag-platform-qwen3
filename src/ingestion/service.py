@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 from src.ingestion.dedup import DeduplicationEngine
 from src.ingestion.parsers.base import DocumentParser
@@ -40,6 +40,7 @@ class IngestionService:
     @retry(  # type: ignore[untyped-decorator]
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
+        retry=retry_if_exception(lambda e: not isinstance(e, ValueError)),
     )
     async def ingest(
         self,
