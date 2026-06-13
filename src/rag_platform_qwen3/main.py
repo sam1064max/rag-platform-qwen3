@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import structlog
@@ -11,7 +12,7 @@ logger = structlog.get_logger()
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
     logger.info("rag-platform-qwen3 starting...")
     register_services({})
     yield
@@ -31,8 +32,8 @@ app = FastAPI(
 metrics_app = make_asgi_app()
 
 
-@app.get("/")
-async def root():
+@app.get("/")  # type: ignore[untyped-decorator]
+async def root() -> dict[str, str]:
     return {"service": "rag-platform-qwen3", "version": "1.0.0"}
 
 

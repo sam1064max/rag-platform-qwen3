@@ -46,7 +46,7 @@ class LLMProvider(ABC):
     ) -> GenerationResult: ...
 
     @abstractmethod
-    async def generate_stream(
+    def generate_stream(
         self,
         prompt: str,
         system_prompt: str | None = None,

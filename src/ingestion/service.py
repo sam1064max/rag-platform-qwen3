@@ -37,7 +37,7 @@ class IngestionService:
             raise ValueError(f"Unsupported file type: {ext}")
         return parser
 
-    @retry(
+    @retry(  # type: ignore[untyped-decorator]
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
     )

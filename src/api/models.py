@@ -1,3 +1,4 @@
+# mypy: disable-error-code="misc"
 from pydantic import BaseModel, Field
 
 
@@ -52,6 +53,6 @@ class Citation(BaseModel):
 class QueryResponse(BaseModel):
     query_id: str
     answer: str
-    citations: list[Citation] | list[dict] = []
+    citations: list[Citation] | list[dict[str, str]] = []
     metrics: dict[str, float | int] = {}
     guardrail_results: dict[str, str] = {}

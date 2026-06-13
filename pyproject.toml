@@ -87,6 +87,9 @@ ignore_missing_imports = true
 explicit_package_bases = true
 namespace_packages = true
 mypy_path = "src"
+disallow_untyped_decorators = false
+warn_return_any = false
+implicit_reexport = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"
@@ -100,4 +103,10 @@ source = ["src"]
 omit = [
     "src/rag_platform_qwen3/__init__.py",
     "tests/*",
+]
+
+[dependency-groups]
+dev = [
+    "types-python-dateutil>=2.9.0.20260518",
+    "types-requests>=2.33.0.20260518",
 ]

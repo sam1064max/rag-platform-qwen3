@@ -5,7 +5,7 @@ from src.generation.providers.vllm import VLLMProvider
 
 
 def create_provider(config: ProviderConfig) -> LLMProvider:
-    providers = {
+    providers: dict[ProviderType, type[LLMProvider]] = {
         ProviderType.VLLM: VLLMProvider,
         ProviderType.OPENAI_COMPAT: OpenAICompatibleProvider,
         ProviderType.OPENROUTER: OpenRouterProvider,
