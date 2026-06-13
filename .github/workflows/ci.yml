@@ -35,6 +35,8 @@ jobs:
       - run: uv sync --extra dev
       - name: Tests
         run: uv run python -m pytest tests/ --cov-report=xml
+        env:
+          PYTHONPATH: .
       - uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
