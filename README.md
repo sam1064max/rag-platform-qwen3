@@ -5,82 +5,42 @@
 
 <p align="center">
 
-<!-- Build & Quality -->
-<a href="https://github.com/sam1064max/rag-platform-qwen3/actions/workflows/ci.yml"><img src="https://github.com/sam1064max/rag-platform-qwen3/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" style="flat-square"></a>
-<a href="https://codecov.io/gh/sam1064max/rag-platform-qwen3"><img src="https://codecov.io/gh/sam1064max/rag-platform-qwen3/branch/main/graph/badge.svg" alt="Coverage" style="flat-square"></a>
-<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.13-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"></a>
-<a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/ruff-checked-blue?style=flat-square&logo=ruff&logoColor=white" alt="Ruff"></a>
-<a href="https://mypy-lang.org/"><img src="https://img.shields.io/badge/mypy-strict-blue?style=flat-square" alt="MyPy"></a>
-<a href="https://pre-commit.com/"><img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=flat-square" alt="Pre-Commit"></a>
+<!-- Automated Status -->
+<a href="https://github.com/sam1064max/rag-platform-qwen3/actions/workflows/ci.yml"><img src="https://github.com/sam1064max/rag-platform-qwen3/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+<a href="https://codecov.io/gh/sam1064max/rag-platform-qwen3"><img src="https://codecov.io/gh/sam1064max/rag-platform-qwen3/branch/main/graph/badge.svg" alt="Coverage"></a>
+<a href="https://github.com/sam1064max/rag-platform-qwen3/releases"><img src="https://img.shields.io/github/v/release/sam1064max/rag-platform-qwen3" alt="Release"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 
 </p>
 
 <p align="center">
 
-<!-- Security -->
-<a href="https://github.com/aquasecurity/trivy"><img src="https://img.shields.io/badge/trivy-passing-orange?style=flat-square&logo=trivy&logoColor=white" alt="Trivy"></a>
-<a href="docs/architecture.md"><img src="https://img.shields.io/badge/SBOM-SPDX-orange?style=flat-square" alt="SBOM"></a>
-<a href="docs/security.md"><img src="https://img.shields.io/badge/secrets-no--hardcoded-orange?style=flat-square" alt="No Hardcoded Secrets"></a>
+<!-- Documentation -->
+<a href="docs/architecture.md"><img src="https://img.shields.io/badge/architecture-blue" alt="Architecture"></a>
+<a href="docs/spec.md"><img src="https://img.shields.io/badge/API-docs-blue" alt="API Docs"></a>
+<a href="docs/security.md"><img src="https://img.shields.io/badge/security-blue" alt="Security"></a>
+<a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributing-blue" alt="Contributing"></a>
+<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-blue" alt="Changelog"></a>
 
 </p>
 
 <p align="center">
 
-<!-- Release -->
-<a href="https://github.com/sam1064max/rag-platform-qwen3/releases"><img src="https://img.shields.io/github/v/release/sam1064max/rag-platform-qwen3?style=flat-square" alt="Release"></a>
-<a href="https://github.com/sam1064max/rag-platform-qwen3/releases"><img src="https://img.shields.io/badge/semver-2.0.0-blue?style=flat-square" alt="SemVer"></a>
-<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-kept--up--to--date-blue?style=flat-square" alt="Changelog"></a>
+<!-- Architecture Evidence -->
+<a href="docs/architecture.md#14-agent-runtime-architecture"><img src="https://img.shields.io/badge/agent--runtime-LangGraph-5851D8" alt="Agent Runtime"></a>
+<a href="docs/architecture.md#8-retrieval-sequence-diagram"><img src="https://img.shields.io/badge/retrieval-hybrid--search-00BCD4" alt="Retrieval System"></a>
+<a href="docs/security.md"><img src="https://img.shields.io/badge/guardrails-NeMo-76B900" alt="Guardrails"></a>
+<a href="docs/architecture.md#11-observability-architecture"><img src="https://img.shields.io/badge/observability-OTel--Prometheus-60E6D8" alt="Observability"></a>
+<a href="docs/spec.md#7-evaluation-requirements"><img src="https://img.shields.io/badge/evaluation-RAGAS--DeepEval-E91E63" alt="Evaluation"></a>
 
 </p>
 
 <p align="center">
 
-<!-- AI Platform Stack -->
-<img src="https://img.shields.io/badge/LLM-Qwen3-7B3FA0?style=flat-square&logo=openai&logoColor=white" alt="Qwen3">
-<img src="https://img.shields.io/badge/inference-vLLM-3B7A57?style=flat-square" alt="vLLM">
-<img src="https://img.shields.io/badge/agents-LangGraph-5851D8?style=flat-square" alt="LangGraph">
-<img src="https://img.shields.io/badge/vector--db-Qdrant-E53832?style=flat-square&logo=qdrant&logoColor=white" alt="Qdrant">
-<img src="https://img.shields.io/badge/API-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
-<img src="https://img.shields.io/badge/memory-Redis-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis">
-<img src="https://img.shields.io/badge/database-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
-<img src="https://img.shields.io/badge/messaging-NATS-27AAE1?style=flat-square" alt="NATS">
-<img src="https://img.shields.io/badge/gateway-LiteLLM-00D4AA?style=flat-square" alt="LiteLLM">
-<img src="https://img.shields.io/badge/guardrails-NeMo-76B900?style=flat-square" alt="NeMo">
-
-</p>
-
-<p align="center">
-
-<!-- Observability -->
-<img src="https://img.shields.io/badge/Langfuse-tracing-3D34A1?style=flat-square" alt="Langfuse">
-<img src="https://img.shields.io/badge/OpenTelemetry-traces-60E6D8?style=flat-square&logo=opentelemetry&logoColor=white" alt="OpenTelemetry">
-<img src="https://img.shields.io/badge/Prometheus-metrics-E6522C?style=flat-square&logo=prometheus&logoColor=white" alt="Prometheus">
-<img src="https://img.shields.io/badge/Grafana-dashboards-F46800?style=flat-square&logo=grafana&logoColor=white" alt="Grafana">
-
-</p>
-
-<p align="center">
-
-<!-- Infrastructure -->
-<img src="https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
-<img src="https://img.shields.io/badge/Compose-ready-2496ED?style=flat-square" alt="Compose">
-<img src="https://img.shields.io/badge/MinIO-storage-C72C48?style=flat-square" alt="MinIO">
-<img src="https://img.shields.io/badge/OpenBao-secrets-FFC107?style=flat-square" alt="OpenBao">
-<img src="https://img.shields.io/badge/self--hosted-yes-4CAF50?style=flat-square" alt="Self-Hosted">
-
-</p>
-
-<p align="center">
-
-<!-- Capabilities -->
-<img src="https://img.shields.io/badge/agentic--AI-enabled-9C27B0?style=flat-square" alt="Agentic AI">
-<img src="https://img.shields.io/badge/RAG-platform-2196F3?style=flat-square" alt="RAG Platform">
-<img src="https://img.shields.io/badge/hybrid--search-enabled-00BCD4?style=flat-square" alt="Hybrid Search">
-<img src="https://img.shields.io/badge/MLOps-ready-FF5722?style=flat-square" alt="MLOps">
-<img src="https://img.shields.io/badge/LLMOps-ready-FF9800?style=flat-square" alt="LLMOps">
-<img src="https://img.shields.io/badge/production--ready-yes-4CAF50?style=flat-square" alt="Production Ready">
-<img src="https://img.shields.io/badge/open--source-MIT-brightgreen?style=flat-square" alt="Open Source">
+<!-- Reports & Operational -->
+<a href="docs/security.md#5-threat-model"><img src="https://img.shields.io/badge/security--report-STRIDE-orange" alt="Security Report"></a>
+<a href="docs/spec.md#12-acceptance-criteria"><img src="https://img.shields.io/badge/production--readiness-spec-green" alt="Production Readiness"></a>
+<a href="/docs"><img src="https://img.shields.io/badge/swagger-ui-docs-85EA7D" alt="Swagger"></a>
 
 </p>
 
@@ -108,6 +68,8 @@ User → FastAPI → Guardrails → Agent Runtime → Hybrid Retrieval → Reran
                                 ├─ Dense (Qdrant)
                                 └─ Sparse (BM25) → RRF Fusion
 ```
+
+See [`docs/architecture.md`](docs/architecture.md) for full system architecture.
 
 ## Quick Start
 
@@ -140,14 +102,14 @@ docker compose -f docker/vllm/docker-compose.gpu.yml up -d
 
 ## Documentation
 
-| Doc | Location |
-|-----|----------|
-| System Spec | [`docs/spec.md`](docs/spec.md) |
-| Architecture | [`docs/architecture.md`](docs/architecture.md) |
-| Security | [`docs/security.md`](docs/security.md) |
-| Badge Strategy | [`docs/readme-badge-strategy.md`](docs/readme-badge-strategy.md) |
-| Ops Runbooks | [`docs/ops/runbooks.md`](docs/ops/runbooks.md) |
-| Disaster Recovery | [`docs/ops/disaster_recovery.md`](docs/ops/disaster_recovery.md) |
+| Doc | Description |
+|-----|-------------|
+| [`docs/spec.md`](docs/spec.md) | System specification and requirements |
+| [`docs/architecture.md`](docs/architecture.md) | Architecture diagrams and design decisions |
+| [`docs/security.md`](docs/security.md) | Threat model and security controls |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Development setup and contribution guide |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history |
+| [`ROADMAP.md`](ROADMAP.md) | Feature roadmap |
 
 ## Development
 
