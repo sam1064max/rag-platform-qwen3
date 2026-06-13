@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# uv
+.uv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Docker
+docker-compose.override.yml
+
+# Data
+data/
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Secrets
+**/secrets/
+!src/security/
+
+# Testing
+.coverage
+htmlcov/
+.coverage.*
+coverage.xml
+.pytest_cache/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Observability
+otel-collector-data/
+prometheus-data/
+grafana-data/
+
+# MinIO
+minio-data/
+
+# Qdrant
+qdrant-data/
+
+# OpenBao
+openbao-data/
+openbao-unseal-keys.txt
