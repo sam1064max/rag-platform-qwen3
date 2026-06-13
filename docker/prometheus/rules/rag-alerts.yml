@@ -1,0 +1,34 @@
+groups:
+  - name: rag-platform
+    rules:
+      - alert: APIHighLatency
+        expr: histogram_quantile(0.95, rate(rag_query_duration_ms_bucket[5m])) > 5000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API p95 latency > 5s"
+
+      - alert: QdrantDown
+        expr: up{job="qdrant"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Qdrant is down"
+
+      - alert: HighGuardrailViolationRate
+        expr: rate(rag_guardrail_violations_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High guardrail violation rate"
+
+      - alert: LowRetrievalRecall
+        expr: rag_retrieval_recall_at_5 < 0.8
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Retrieval recall@5 below threshold"

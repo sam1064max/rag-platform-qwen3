@@ -1,0 +1,113 @@
+version: "3.8"
+
+services:
+  vllm-embed:
+    image: vllm/vllm-openai:v0.6.4
+    container_name: rag-vllm-embed
+    restart: unless-stopped
+    networks:
+      rag-network:
+        ipv4_address: 172.20.0.60
+    ports:
+      - "8010:8000"
+    volumes:
+      - /mnt/models:/models:ro
+    environment:
+      HF_TOKEN: "${HF_TOKEN:-}"
+    command:
+      - "--model"
+      - "Qwen/Qwen3-Embedding-8B"
+      - "--port"
+      - "8000"
+      - "--tensor-parallel-size"
+      - "1"
+      - "--max-model-len"
+      - "8192"
+      - "--gpu-memory-utilization"
+      - "0.95"
+      - "--dtype"
+      - "float16"
+      - "--enforce-eager"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  vllm-rerank:
+    image: vllm/vllm-openai:v0.6.4
+    container_name: rag-vllm-rerank
+    restart: unless-stopped
+    networks:
+      rag-network:
+        ipv4_address: 172.20.0.61
+    ports:
+      - "8011:8000"
+    volumes:
+      - /mnt/models:/models:ro
+    environment:
+      HF_TOKEN: "${HF_TOKEN:-}"
+    command:
+      - "--model"
+      - "Qwen/Qwen3-Reranker"
+      - "--port"
+      - "8000"
+      - "--tensor-parallel-size"
+      - "1"
+      - "--max-model-len"
+      - "8192"
+      - "--gpu-memory-utilization"
+      - "0.95"
+      - "--dtype"
+      - "float16"
+      - "--enforce-eager"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  vllm-generate:
+    image: vllm/vllm-openai:v0.6.4
+    container_name: rag-vllm-generate
+    restart: unless-stopped
+    networks:
+      rag-network:
+        ipv4_address: 172.20.0.62
+    ports:
+      - "8012:8000"
+    volumes:
+      - /mnt/models:/models:ro
+    environment:
+      HF_TOKEN: "${HF_TOKEN:-}"
+    command:
+      - "--model"
+      - "Qwen/Qwen3-32B-Instruct"
+      - "--port"
+      - "8000"
+      - "--tensor-parallel-size"
+      - "1"
+      - "--max-model-len"
+      - "32768"
+      - "--gpu-memory-utilization"
+      - "0.95"
+      - "--dtype"
+      - "bfloat16"
+      - "--enforce-eager"
+      - "--max-num-seqs"
+      - "16"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+networks:
+  rag-network:
+    external: true

@@ -1,0 +1,44 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+rule_files:
+  - 'rules/*.yml'
+
+scrape_configs:
+  - job_name: 'rag-api'
+    static_configs:
+      - targets: ['rag-api:8000']
+        labels:
+          service: 'rag-api'
+    metrics_path: '/api/v1/metrics'
+
+  - job_name: 'qdrant'
+    static_configs:
+      - targets: ['qdrant:6333']
+        labels:
+          service: 'qdrant'
+
+  - job_name: 'openbao'
+    static_configs:
+      - targets: ['openbao:8200']
+        labels:
+          service: 'openbao'
+
+  - job_name: 'otel-collector'
+    static_configs:
+      - targets: ['otel-collector:8888']
+        labels:
+          service: 'otel-collector'
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'node'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
