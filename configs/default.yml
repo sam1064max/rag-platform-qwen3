@@ -1,0 +1,62 @@
+env: development
+log_level: info
+
+qdrant:
+  host: localhost
+  port: 6334
+  api_key: ""
+  collection: documents
+
+minio:
+  host: localhost
+  port: 9000
+  access_key: ragadmin
+  secret_key: ragadmin123
+
+openbao:
+  addr: http://localhost:8200
+  token: ""
+
+otel:
+  endpoint: http://localhost:4317
+
+langfuse:
+  host: http://localhost:3000
+  public_key: ""
+  secret_key: ""
+
+llm:
+  provider: vllm
+  model: Qwen3-32B-Instruct
+  api_base: http://localhost:8012/v1
+  api_key: not-needed
+
+embedding:
+  model: Qwen/Qwen3-Embedding-8B
+  endpoint: http://localhost:8010/v1
+  batch_size: 32
+
+reranker:
+  model: Qwen/Qwen3-Reranker
+  endpoint: http://localhost:8011/v1
+  top_k: 5
+
+retrieval:
+  top_k: 20
+  rrf_k: 60
+  rerank_top_k: 5
+
+chunking:
+  parent_size: 1800
+  child_size: 350
+  overlap: 50
+
+generation:
+  max_tokens: 4096
+  temperature: 0.0
+  top_p: 0.9
+
+guardrails:
+  input_mode: enforce
+  output_mode: enforce
+  max_query_length: 4096

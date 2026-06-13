@@ -55,15 +55,11 @@ deepeval = ["deepeval>=1.2.0"]
 guardrails = ["nemoguardrails>=0.10.0"]
 
 [project.scripts]
-rag-platform-qwen3 = "rag_platform_qwen3:main"
+rag = "rag_platform_qwen3.main:main"
 
 [build-system]
 requires = ["uv_build>=0.11.19,<0.12.0"]
 build-backend = "uv_build"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["rag_platform_qwen3*"]
 
 [tool.ruff]
 target-version = "py313"
