@@ -34,7 +34,7 @@ class ChunkingEngine:
     ) -> None:
         self._parent_size = parent_size
         self._child_size = child_size
-        self._overlap = overlap
+        self._overlap = min(overlap, max(parent_size - 1, 0))
 
     def _count_tokens(self, text: str) -> int:
         import tiktoken
