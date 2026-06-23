@@ -100,6 +100,14 @@ docker compose -f docker/vllm/docker-compose.gpu.yml up -d
 | OpenAI-compatible API | External | `provider: openai_compat` |
 | OpenRouter | External | `provider: openrouter` |
 
+## Model Limitations
+
+| Limitation | Details | Workaround |
+|------------|---------|------------|
+| No image input | Default model (`deepseek-v4-flash-free`) rejects image files | Use external OCR (Tesseract, Textract) to extract text first |
+| No scanned PDF support | Scanned PDFs cannot be queried directly | Pre-process with OCR pipeline |
+| Future: OCR pipeline | Planned P2 enhancement for automatic image-to-text | N/A |
+
 ## Documentation
 
 | Doc | Description |

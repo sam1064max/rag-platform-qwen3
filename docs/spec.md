@@ -27,6 +27,31 @@ Build a production-grade, fully self-hosted, open-source Retrieval-Augmented Gen
 
 ---
 
+## 1.5 Model Input Limitations
+
+### 1.5.1 Image Input Not Supported
+
+The default inference model (`deepseek-v4-flash-free`) does **not** support image inputs. Attempts to pass images (screenshots, scanned PDFs, photos) to the query endpoint will fail:
+
+```
+ERROR: Cannot read 'image.png' (this model does not support image input).
+```
+
+**Workaround for users:** Extract text from images before querying. Use an external OCR tool (e.g., Tesseract, Amazon Textract) to convert image-based documents to text.
+
+**Future enhancement:** An OCR pipeline could be added as a preprocessing step (P2 priority) to automatically extract text from image-based inputs before passing them to the model.
+
+### 1.5.2 Affected Features
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Text-based queries | Supported | Primary use case |
+| Image upload as query input | **Not supported** | Returns error above |
+| Scanned PDF query input | **Not supported** | Requires OCR preprocessing |
+| Screenshot as query context | **Not supported** | Requires OCR preprocessing |
+
+---
+
 ## 2. Functional Requirements
 
 ### 2.1 Document Ingestion
